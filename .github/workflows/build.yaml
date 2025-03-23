@@ -9,9 +9,9 @@ on:
   workflow_dispatch:  # Manual trigger
 
 permissions:
-  contents: read
+  contents: write  # Allow creating release
   packages: write  # Needed for publishing to GHCR
-
+  
 jobs:
   build:
     runs-on: ubuntu-latest
