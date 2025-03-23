@@ -30,10 +30,10 @@ jobs:
       - name: Get latest plugin versions
         id: plugin_versions
         run: |
-          echo "NETCUP_VERSION=$(git ls-remote --tags --sort=-v:refname https://github.com/caddy-dns/netcup.git | grep -o 'refs/tags/.*' | sed 's/refs\/tags\///' | head -1)" >> $GITHUB_ENV
-          echo "CORAZA_VERSION=$(git ls-remote --tags --sort=-v:refname https://github.com/corazawaf/coraza-caddy.git | grep -o 'refs/tags/.*' | sed 's/refs\/tags\///' | head -1)" >> $GITHUB_ENV
-          echo "RATELIMIT_VERSION=$(git ls-remote --tags --sort=-v:refname https://github.com/mholt/caddy-ratelimit.git | grep -o 'refs/tags/.*' | sed 's/refs\/tags\///' | head -1)" >> $GITHUB_ENV
-          echo "SECURITY_VERSION=$(git ls-remote --tags --sort=-v:refname https://github.com/greenpau/caddy-security.git | grep -o 'refs/tags/.*' | sed 's/refs\/tags\///' | head -1)" >> $GITHUB_ENV
+          echo "NETCUP_VERSION=$(git ls-remote --tags --sort=-v:refname https://github.com/caddy-dns/netcup.git | grep -o 'refs/tags/.*' | sed 's/refs\/tags\///' | sed 's/\^{}//' | head -1)" >> $GITHUB_ENV
+          echo "CORAZA_VERSION=$(git ls-remote --tags --sort=-v:refname https://github.com/corazawaf/coraza-caddy.git | grep -o 'refs/tags/.*' | sed 's/refs\/tags\///' | sed 's/\^{}//' | head -1)" >> $GITHUB_ENV
+          echo "RATELIMIT_VERSION=$(git ls-remote --tags --sort=-v:refname https://github.com/mholt/caddy-ratelimit.git | grep -o 'refs/tags/.*' | sed 's/refs\/tags\///' | sed 's/\^{}//' | head -1)" >> $GITHUB_ENV
+          echo "SECURITY_VERSION=$(git ls-remote --tags --sort=-v:refname https://github.com/greenpau/caddy-security.git | grep -o 'refs/tags/.*' | sed 's/refs\/tags\///' | sed 's/\^{}//' | head -1)" >> $GITHUB_ENV
 
       - name: Generate Semantic Version Tag
         id: version
