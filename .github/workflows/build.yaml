@@ -61,6 +61,7 @@ jobs:
           echo "  - Netcup: ${{ env.NETCUP_VERSION }}" >> changelog.md
           echo "  - Coraza: ${{ env.CORAZA_VERSION }}" >> changelog.md
           echo "  - Rate Limit: ${{ env.RATELIMIT_VERSION }}" >> changelog.md
+          echo "  - Security: ${{ env.SECURITY_VERSION }}" >> changelog.md
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
