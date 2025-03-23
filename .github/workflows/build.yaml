@@ -1,0 +1,69 @@
+name: Build and Publish Caddy Image
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly build
+  workflow_dispatch:  # Manual trigger
+
+permissions:
+  contents: read
+  packages: write  # Needed for publishing to GHCR
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+
+      - name: Extract latest Caddy version
+        id: caddy_version
+        run: echo "CADDY_VERSION=$(curl -s https://api.github.com/repos/caddyserver/caddy/releases/latest | jq -r .tag_name)" >> $GITHUB_ENV
+
+      - name: Get latest plugin versions
+        id: plugin_versions
+        run: |
+          echo "NETCUP_VERSION=$(git ls-remote --tags https://github.com/caddy-dns/netcup.git | tail -1 | awk '{print $2}' | sed 's/refs\/tags\///')" >> $GITHUB_ENV
+          echo "CORAZA_VERSION=$(git ls-remote --tags https://github.com/corazawaf/coraza-caddy.git | tail -1 | awk '{print $2}' | sed 's/refs\/tags\///')" >> $GITHUB_ENV
+          echo "RATELIMIT_VERSION=$(git ls-remote --tags https://github.com/dunglas/caddy-ratelimit.git | tail -1 | awk '{print $2}' | sed 's/refs\/tags\///')" >> $GITHUB_ENV
+
+      - name: Generate Semantic Version Tag
+        id: version
+        run: |
+          echo "VERSION=1.$(date +%Y).$(date +%m%d)" >> $GITHUB_ENV
+
+      - name: Build Docker Image
+        run: |
+          docker build --no-cache \
+            --build-arg CADDY_VERSION=${{ env.CADDY_VERSION }} \
+            -t ghcr.io/${{ github.repository_owner }}/custom-caddy:${{ env.VERSION }} \
+            -t ghcr.io/${{ github.repository_owner }}/custom-caddy:latest .
+
+      - name: Push Docker Image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/custom-caddy:${{ env.VERSION }}
+          docker push ghcr.io/${{ github.repository_owner }}/custom-caddy:latest
+
+      - name: Generate Changelog
+        id: changelog
+        run: |
+          echo "### Changelog" > changelog.md
+          echo "- Built with Caddy ${{ env.CADDY_VERSION }}" >> changelog.md
+          echo "- Plugins:" >> changelog.md
+          echo "  - Netcup: ${{ env.NETCUP_VERSION }}" >> changelog.md
+          echo "  - Coraza: ${{ env.CORAZA_VERSION }}" >> changelog.md
+          echo "  - Rate Limit: ${{ env.RATELIMIT_VERSION }}" >> changelog.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.VERSION }}
+          name: Caddy Build ${{ env.VERSION }}
+          body_path: changelog.md
