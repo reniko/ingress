@@ -36,10 +36,26 @@ jobs:
           echo "SECURITY_VERSION=$(git ls-remote --tags --sort=-v:refname https://github.com/greenpau/caddy-security.git | grep -o 'refs/tags/.*' | sed 's/refs\/tags\///' | sed 's/\^{}//' | head -1)" >> $GITHUB_ENV
           echo "GEOIP_VERSION=$(git ls-remote --tags --sort=-v:refname https://github.com/porech/caddy-maxmind-geolocation.git | grep -o 'refs/tags/.*' | sed 's/refs\/tags\///' | sed 's/\^{}//' | head -1)" >> $GITHUB_ENV
 
-      - name: Generate Semantic Version Tag
-        id: version
+      - name: Get Current Date
+        id: date
+        run: echo "DATE=$(date +'%Y.%m%d')" >> $GITHUB_ENV
+
+      - name: Get Latest Tag
+        id: get_latest_tag
         run: |
-          echo "VERSION=1.$(date +%Y).$(date +%m%d)" >> $GITHUB_ENV
+          LATEST_TAG=$(git tag --list "1.${{ env.DATE }}.*" --sort=-v:refname | head -n 1)
+          echo "Latest tag: $LATEST_TAG"
+          if [[ -z "$LATEST_TAG" ]]; then
+            echo "BUILD_NUM=1" >> $GITHUB_ENV
+          else
+            LAST_BUILD_NUM=$(echo "$LATEST_TAG" | awk -F. '{print $NF}')
+            NEW_BUILD_NUM=$((LAST_BUILD_NUM + 1))
+            echo "BUILD_NUM=$NEW_BUILD_NUM" >> $GITHUB_ENV
+          fi
+
+      - name: Set Version
+        id: set_version
+        run: echo "VERSION=1.${{ env.DATE }}.${{ env.BUILD_NUM }}" >> $GITHUB_ENV
 
       - name: Build Docker Image
         run: |
