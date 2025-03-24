@@ -34,6 +34,7 @@ jobs:
           echo "CORAZA_VERSION=$(git ls-remote --tags --sort=-v:refname https://github.com/corazawaf/coraza-caddy.git | grep -o 'refs/tags/.*' | sed 's/refs\/tags\///' | sed 's/\^{}//' | head -1)" >> $GITHUB_ENV
           echo "RATELIMIT_VERSION=$(git ls-remote --tags --sort=-v:refname https://github.com/mholt/caddy-ratelimit.git | grep -o 'refs/tags/.*' | sed 's/refs\/tags\///' | sed 's/\^{}//' | head -1)" >> $GITHUB_ENV
           echo "SECURITY_VERSION=$(git ls-remote --tags --sort=-v:refname https://github.com/greenpau/caddy-security.git | grep -o 'refs/tags/.*' | sed 's/refs\/tags\///' | sed 's/\^{}//' | head -1)" >> $GITHUB_ENV
+          echo "GEOIP_VERSION=$(git ls-remote --tags --sort=-v:refname https://github.com/porech/caddy-maxmind-geolocation.git | grep -o 'refs/tags/.*' | sed 's/refs\/tags\///' | sed 's/\^{}//' | head -1)" >> $GITHUB_ENV
 
       - name: Generate Semantic Version Tag
         id: version
@@ -62,6 +63,7 @@ jobs:
           echo "  - Coraza: ${{ env.CORAZA_VERSION }}" >> changelog.md
           echo "  - Rate Limit: ${{ env.RATELIMIT_VERSION }}" >> changelog.md
           echo "  - Security: ${{ env.SECURITY_VERSION }}" >> changelog.md
+          echo "  - Maxmind Geo IP: ${{ env.GEOIP_VERSION }}" >> changelog.md
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
