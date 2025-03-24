@@ -3,7 +3,8 @@ RUN xcaddy build \
     --with github.com/caddy-dns/netcup \
     --with github.com/corazawaf/coraza-caddy/v2 \
     --with github.com/mholt/caddy-ratelimit \
-    --with github.com/greenpau/caddy-security
+    --with github.com/greenpau/caddy-security \
+    --with github.com/porech/caddy-maxmind-geolocation
 # Step 2: Create a Minimal Runtime Image
 FROM caddy:latest
 # Copy the built Caddy binary
