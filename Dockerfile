@@ -1,6 +1,6 @@
 FROM caddy:builder AS builder
 RUN xcaddy build \
-    --with github.com/caddy-dns/bunny \
+    --with github.com/caddy-dns/desec \
     --with github.com/corazawaf/coraza-caddy/v2 \
     --with github.com/mholt/caddy-ratelimit \
     --with github.com/greenpau/caddy-security \
