@@ -17,8 +17,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Update
-        run: sudo apt update && sudo apt upgrade -y
+      - name: Install Go
+        uses: actions/setup-go@v5
     
       - name: Checkout repository
         uses: actions/checkout@v4
