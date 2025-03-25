@@ -30,7 +30,7 @@ jobs:
       - name: Get latest plugin versions
         id: plugin_versions
         run: |
-          echo "BUNNY_VERSION=$(git ls-remote --tags --sort=-v:refname https://github.com/caddy-dns/bunny.git | grep -o 'refs/tags/.*' | sed 's/refs\/tags\///' | sed 's/\^{}//' | head -1)" >> $GITHUB_ENV
+          echo "DESEC_VERSION=$(git ls-remote --tags --sort=-v:refname https://github.com/caddy-dns/desec.git | grep -o 'refs/tags/.*' | sed 's/refs\/tags\///' | sed 's/\^{}//' | head -1)" >> $GITHUB_ENV
           echo "CORAZA_VERSION=$(git ls-remote --tags --sort=-v:refname https://github.com/corazawaf/coraza-caddy.git | grep -o 'refs/tags/.*' | sed 's/refs\/tags\///' | sed 's/\^{}//' | head -1)" >> $GITHUB_ENV
           echo "RATELIMIT_VERSION=$(git ls-remote --tags --sort=-v:refname https://github.com/mholt/caddy-ratelimit.git | grep -o 'refs/tags/.*' | sed 's/refs\/tags\///' | sed 's/\^{}//' | head -1)" >> $GITHUB_ENV
           echo "SECURITY_VERSION=$(git ls-remote --tags --sort=-v:refname https://github.com/greenpau/caddy-security.git | grep -o 'refs/tags/.*' | sed 's/refs\/tags\///' | sed 's/\^{}//' | head -1)" >> $GITHUB_ENV
@@ -75,7 +75,7 @@ jobs:
           echo "### Changelog" > changelog.md
           echo "- Built with Caddy ${{ env.CADDY_VERSION }}" >> changelog.md
           echo "- Plugins:" >> changelog.md
-          echo "  - Bunny: ${{ env.BUNNY_VERSION }}" >> changelog.md
+          echo "  - deSEC: ${{ env.BUNNY_VERSION }}" >> changelog.md
           echo "  - Coraza: ${{ env.CORAZA_VERSION }}" >> changelog.md
           echo "  - Rate Limit: ${{ env.RATELIMIT_VERSION }}" >> changelog.md
           echo "  - Security: ${{ env.SECURITY_VERSION }}" >> changelog.md
